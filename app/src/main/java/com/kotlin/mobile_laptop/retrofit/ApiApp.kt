@@ -17,7 +17,7 @@ interface ApiApp {
         ): Single<ProductResponse>
 
         @FormUrlEncoded
-        @POST("oder.php")
+        @POST("donhang.php")
         fun oder(
                 @Field("email") email: String,
                 @Field("phoneNumber") phoneNumber: String,
@@ -25,21 +25,26 @@ interface ApiApp {
                 @Field("amount") amount: Int,
                 @Field("totalMoney") totalMoney: String,
                 @Field("idUser") idUser: String,
-                @Field("detai") detail: String,
+                @Field("detail") detail: String,
         ) : Single<OrderResponse>
 
         @FormUrlEncoded
         @POST("login.php")
         fun login(
-                @Field("userName") userName : String,
-                @Field("password") password : String,
+                @Field("username") userName : String,
+                @Field("password") password : String
         ) : Single<UserResponse>
 
         @FormUrlEncoded
         @POST("register.php")
         fun register(
-                @Field("userName") userName : String,
-                @Field("password") password : String,
-                @Field("confirmpassword") confirmpassword : String
+                @Field("username") userName : String,
+                @Field("password") password : String
+        ) : Single<UserResponse>
+
+        @FormUrlEncoded
+        @POST("resetPass.php")
+        fun resetPass(
+                @Field("email") email : String,
         ) : Single<UserResponse>
 }

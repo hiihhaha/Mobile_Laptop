@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/drawable-v24/bg_button_disable.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/drawable/amount_backgr.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/drawable/bg_button.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/drawable/bg_edt.xml" value="0.25416666666666665" />
@@ -13,14 +14,17 @@
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/drawable/spinner.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/activity_cart.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/activity_detail.xml" value="0.264" />
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/activity_history_order.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/activity_home.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/activity_main.xml" value="0.22395833333333334" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/activity_pay.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/activity_register_account.xml" value="0.264" />
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/activity_reset_pass.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/activity_type_product.xml" value="0.2557291666666667" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/item_cart.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/item_home.xml" value="0.23802083333333332" />
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/item_menu.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/item_navigation.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/item_product.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Mobile_Laptop/app/src/main/res/layout/item_typer_product.xml" value="0.23802083333333332" />

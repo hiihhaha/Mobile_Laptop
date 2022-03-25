@@ -71,7 +71,7 @@
         android:layout_marginLeft="64dp"
         android:layout_marginTop="32dp"
         android:layout_marginRight="64dp"
-        android:background="@drawable/bg_button"
+        android:background="@drawable/bg_button_enable"
         android:text="Đăng ký"
         android:textAllCaps="false"
         android:textColor="@color/white" />

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.widget.Toast
 import com.kotlin.mobile_laptop.R
 import com.kotlin.mobile_laptop.model.UserResponse
@@ -94,6 +95,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onError(e: Throwable) {
+                    Log.e("======>", "onError: ${e.message} " )
                     Toast.makeText(this@LoginActivity, e.message, Toast.LENGTH_SHORT).show()
                 }
 

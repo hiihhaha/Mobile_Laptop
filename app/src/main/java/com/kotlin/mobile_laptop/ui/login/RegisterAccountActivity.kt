@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.widget.Toast
 import com.kotlin.mobile_laptop.R
 import com.kotlin.mobile_laptop.model.UserResponse
@@ -82,7 +83,7 @@ class RegisterAccountActivity : AppCompatActivity() {
         }
     }
     private fun register() {
-        apiBanHang?.register(userName,password,confirmpassword)
+        apiBanHang?.register(userName,password)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : SingleObserver<UserResponse> {
@@ -112,6 +113,7 @@ class RegisterAccountActivity : AppCompatActivity() {
                 }
 
                 override fun onError(e: Throwable) {
+                    Log.e("======>", "onError: ${e.message} " )
                     Toast.makeText(this@RegisterAccountActivity, e.message, Toast.LENGTH_SHORT).show()
                 }
 

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.widget.Toast
 import com.google.gson.Gson
 import com.kotlin.mobile_laptop.R
@@ -32,42 +33,54 @@ class PayActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pay)
-        totalMoney = intent.getIntExtra("totalMoney",0)
+        totalMoney = intent.getIntExtra("totalMoney", 0)
         countItem()
         initView()
-        initControl ()
+        initControl()
     }
+
     private fun countItem() {
         CartControler.arrayCart.forEach {
             amount += it.amount
         }
 
     }
+
     private fun initView() {
         val formatter = DecimalFormat("#,###")
         val giaSP = formatter.format(totalMoney)
         tv_Money.text = "$giaSP Đ"
     }
-    private fun initControl (){
-        img_back3.setOnClickListener{onBackPressed()}
+
+    private fun initControl() {
+        img_back3.setOnClickListener { onBackPressed() }
         btn_Pay.setOnClickListener {
-            if (isValidateSuccess()){
+            if (isValidateSuccess()) {
                 payOrder()
-
-
             }
         }
     }
-    private fun isValidateSuccess() : Boolean {
+
+    private fun isValidateSuccess(): Boolean {
         address = edt_address.text.toString().trim()
         if (TextUtils.isEmpty(address)) {
-            Toast.makeText(this,"Bạn chưa nhập địa chỉ", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Bạn chưa nhập địa chỉ", Toast.LENGTH_SHORT).show()
             return false
         }
         return true
     }
+
     private fun payOrder() {
-        apiBanHang?.oder(email,phoneNumber,address,amount,totalMoney.toString(),idUser, Gson().toJson(CartControler.arrayCart))
+        Log.e("=====>", "detail: ${Gson().toJson(CartControler.arrayCart)}")
+        apiBanHang?.oder(
+            email = email,
+            phoneNumber = phoneNumber,
+            address = address,
+            amount = amount,
+            totalMoney = totalMoney.toString(),
+            idUser = idUser,
+            detail = Gson().toJson(CartControler.arrayCart)
+        )
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : SingleObserver<OrderResponse> {

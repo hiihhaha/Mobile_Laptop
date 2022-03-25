@@ -6,4 +6,43 @@
     android:layout_height="match_parent"
     tools:context=".ui.login.ResetPassActivity">
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/line1"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/edt_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_baseline_email_24"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:padding="10dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_rspass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Thay đổi mật khẩu"
+        android:textColor="@color/orange"
+        android:background="@drawable/bg_button_enable"
+        app:layout_constraintTop_toBottomOf="@id/line1" />
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/progressbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

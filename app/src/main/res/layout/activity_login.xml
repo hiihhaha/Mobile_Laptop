@@ -10,7 +10,7 @@
         android:background="#00BCC3"
         android:gravity="center"
         android:padding="32dp"
-        android:text="Đăng Nhập"
+        android:text="Login"
         android:textColor="@color/white"
         android:textSize="64sp" />
 
@@ -54,8 +54,8 @@
         android:layout_marginLeft="64dp"
         android:layout_marginTop="32dp"
         android:layout_marginRight="64dp"
-        android:background="@drawable/bg_button"
-        android:text="Đăng nhập"
+        android:background="@drawable/bg_button_enable"
+        android:text="Login"
         android:textAllCaps="false"
         android:textColor="@color/white" />
     <LinearLayout

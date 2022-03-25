@@ -21,6 +21,7 @@ import com.kotlin.mobile_laptop.retrofit.ApiApp
 import com.kotlin.mobile_laptop.retrofit.Cilent
 import com.kotlin.mobile_laptop.ui.home.adapter.HomeAdapter
 import com.kotlin.mobile_laptop.ui.home.adapter.ProductAdapter
+import com.kotlin.mobile_laptop.ui.login.LoginActivity
 import com.kotlin.mobile_laptop.ui.type_product.TypeProductActivity
 import com.kotlin.mobile_laptop.utils.Utils.Companion.BaseUrl
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -171,6 +172,10 @@ class HomeActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         img_menu.setOnClickListener {
             drawelayout.openDrawer(GravityCompat.START)
+        }
+        tv_login.setOnClickListener {
+            var intent = Intent(this,LoginActivity::class.java)
+            startActivity(intent)
         }
     }
 
