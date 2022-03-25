@@ -1,9 +1,6 @@
 package com.kotlin.mobile_laptop.retrofit
 
-import com.kotlin.mobile_laptop.model.ItemMenuResponse
-import com.kotlin.mobile_laptop.model.OrderProduct
-import com.kotlin.mobile_laptop.model.OrderResponse
-import com.kotlin.mobile_laptop.model.ProductResponse
+import com.kotlin.mobile_laptop.model.*
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.*
 
@@ -18,6 +15,7 @@ interface ApiApp {
         fun getDetail(
                 @Query("type") type : Int
         ): Single<ProductResponse>
+
         @FormUrlEncoded
         @POST("oder.php")
         fun oder(
@@ -29,4 +27,19 @@ interface ApiApp {
                 @Field("idUser") idUser: String,
                 @Field("detai") detail: String,
         ) : Single<OrderResponse>
+
+        @FormUrlEncoded
+        @POST("login.php")
+        fun login(
+                @Field("userName") userName : String,
+                @Field("password") password : String,
+        ) : Single<UserResponse>
+
+        @FormUrlEncoded
+        @POST("register.php")
+        fun register(
+                @Field("userName") userName : String,
+                @Field("password") password : String,
+                @Field("confirmpassword") confirmpassword : String
+        ) : Single<UserResponse>
 }

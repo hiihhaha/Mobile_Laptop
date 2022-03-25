@@ -10,7 +10,7 @@
         android:background="?colorPrimary"
         android:gravity="center"
         android:padding="32dp"
-        android:text="Register"
+        android:text="Đăng Ký"
         android:textColor="@color/white"
         android:textSize="64sp" />
 
@@ -72,7 +72,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginRight="64dp"
         android:background="@drawable/bg_button"
-        android:text="Register"
+        android:text="Đăng ký"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
