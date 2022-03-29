@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.kotlin.mobile_laptop.R
+import com.kotlin.mobile_laptop.local.AppPreferences
 import com.kotlin.mobile_laptop.model.UserResponse
 import com.kotlin.mobile_laptop.retrofit.ApiApp
 import com.kotlin.mobile_laptop.retrofit.Cilent
@@ -22,6 +24,16 @@ class LoginActivity : AppCompatActivity() {
     var apiBanHang = Cilent.getInstance(Utils.BaseUrl)?.create(ApiApp::class.java)
     var userName = ""
     var password = ""
+
+    val processDialog by lazy {
+        KProgressHUD.create(this)
+            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+            .setLabel("Please wait")
+            .setCancellable(true)
+            .setAnimationSpeed(2)
+            .setDimAmount(0.5f)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -30,7 +42,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initControl() {
         btn_login.setOnClickListener {
+
             if (isValidateSuccess()) {
+//                processDialog.show()
                 login()
             }
         }
@@ -40,10 +54,11 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
         tv_forgot.setOnClickListener {
-            startActivity(Intent(this,RegisterAccountActivity::class.java))
+            startActivity(Intent(this, RegisterAccountActivity::class.java))
             finish()
         }
     }
+
     private fun isValidateSuccess(): Boolean {
         userName = edt_username.text.toString().trim()
         password = edt_password.text.toString().trim()
@@ -67,24 +82,43 @@ class LoginActivity : AppCompatActivity() {
         }
         return true
     }
+
     private fun login() {
-        apiBanHang?.login(userName,password)
+        apiBanHang?.login(userName, password)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : SingleObserver<UserResponse> {
                 override fun onSuccess(userResponse: UserResponse) {
+//                    processDialog.dismiss()
                     if (userResponse.success == true) {
-                        userResponse.result?.getOrNull(0)?.let {
-                            Utils.user = it
-                        }
+                        // Thông báo đăng nhập thành công
                         Toast.makeText(
                             this@LoginActivity,
                             "Đăng nhập thành công",
                             Toast.LENGTH_SHORT
                         ).show()
-                        var intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                        startActivity(intent)
-                        finish()
+
+                        // Kiểm tra thông tin người dùng
+                        userResponse.result?.getOrNull(0)?.let { user ->
+
+                            // Nếu có : Lưu lại thông tin người dùng
+                            AppPreferences(this@LoginActivity).saveUserInfo(user)
+
+                            // Chuyển màn hình
+                            Intent(this@LoginActivity, HomeActivity::class.java).also {
+                                startActivity(it)
+                                finish()
+                            }
+
+                        } ?: kotlin.run {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Thông tin người dùng trống ",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+
                     } else {
                         Toast.makeText(
                             this@LoginActivity,
@@ -95,7 +129,8 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e("======>", "onError: ${e.message} " )
+//                    processDialog.dismiss()
+                    Log.e("======>", "onError: ${e.message} ")
                     Toast.makeText(this@LoginActivity, e.message, Toast.LENGTH_SHORT).show()
                 }
 

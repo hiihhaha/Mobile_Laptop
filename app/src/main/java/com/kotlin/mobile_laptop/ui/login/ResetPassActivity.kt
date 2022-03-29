@@ -7,9 +7,11 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import com.kotlin.mobile_laptop.R
+import com.kotlin.mobile_laptop.local.AppPreferences
 import com.kotlin.mobile_laptop.model.UserResponse
 import com.kotlin.mobile_laptop.retrofit.ApiApp
 import com.kotlin.mobile_laptop.retrofit.Cilent
+import com.kotlin.mobile_laptop.ui.home.HomeActivity
 import com.kotlin.mobile_laptop.utils.Utils
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.SingleObserver
@@ -25,6 +27,7 @@ class ResetPassActivity : AppCompatActivity() {
         setContentView(R.layout.activity_reset_pass)
         initControll()
     }
+
     private fun initControll() {
         btn_rspass.setOnClickListener {
             if (isValidateSuccess()) {
@@ -32,10 +35,10 @@ class ResetPassActivity : AppCompatActivity() {
                 resetPass()
 
 
-
             }
         }
     }
+
     private fun isValidateSuccess(): Boolean {
         email = edt_email.text.toString().trim()
 
@@ -43,12 +46,14 @@ class ResetPassActivity : AppCompatActivity() {
             Toast.makeText(
                 this,
                 "Bạn chưa nhập email",
-                Toast.LENGTH_SHORT)
+                Toast.LENGTH_SHORT
+            )
             return false
         }
 
         return true
     }
+
     private fun resetPass() {
         apiBanHang?.resetPass(email)
             ?.subscribeOn(Schedulers.io())
@@ -57,18 +62,23 @@ class ResetPassActivity : AppCompatActivity() {
                 override fun onSuccess(userResponse: UserResponse) {
                     progressbar.visibility = View.GONE
                     if (userResponse.success == true) {
-                        userResponse.result?.getOrNull(0)?.let {
-                            Utils.user = it
+                        // Kiểm tra thông tin người dùng
+                        userResponse.result?.getOrNull(0)?.let { user ->
 
+                            // Nếu có : Lưu lại thông tin người dùng
+                            AppPreferences(this@ResetPassActivity).saveUserInfo(user)
+
+                            // Chuyển màn hình
+                            val intent = Intent(this@ResetPassActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } ?: kotlin.run {
+                            Toast.makeText(
+                                this@ResetPassActivity,
+                                "Thông tin người dùng trống ",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                        Toast.makeText(
-                            this@ResetPassActivity,
-                            "reset pass thành công",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        var intent = Intent(this@ResetPassActivity, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
                     } else {
                         Toast.makeText(
                             this@ResetPassActivity,

@@ -57,6 +57,7 @@ class CartAdapter(
                     }.show()
             }
         }
+
         holder.btn_Plus.setOnClickListener {
             order.amount += 1
             holder.tv_Amount.text = order.amount.toString()
@@ -73,6 +74,6 @@ class CartAdapter(
         var tv_name = itemVew.findViewById<TextView>(R.id.tv_name)
         var tv_price = itemVew.findViewById<TextView>(R.id.tv_price)
         var tv_Amount = itemVew.findViewById<TextView>(R.id.tv_Amount)
-        var tv_Total_Money = itemVew.findViewById<TextView>(R.id.tv_Total_Money)
+        var tv_Total_Money = itemVew.findViewById<TextView>(R.id.tv_total_money)
     }
 }

@@ -22,6 +22,7 @@ class Cilent {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor(loggingInterceptor)
                 .connectionPool(ConnectionPool(0, 5, TimeUnit.MINUTES))
                 .protocols(listOf(Protocol.HTTP_1_1))
                 .build()

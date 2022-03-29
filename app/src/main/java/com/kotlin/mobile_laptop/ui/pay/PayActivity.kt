@@ -30,6 +30,7 @@ class PayActivity : AppCompatActivity() {
     var idUser = ""
     var amount = 0
     var detailoder = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pay)

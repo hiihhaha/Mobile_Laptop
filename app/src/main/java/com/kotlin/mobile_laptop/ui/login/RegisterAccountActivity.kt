@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import com.kotlin.mobile_laptop.R
+import com.kotlin.mobile_laptop.local.AppPreferences
 import com.kotlin.mobile_laptop.model.UserResponse
 import com.kotlin.mobile_laptop.retrofit.ApiApp
 import com.kotlin.mobile_laptop.retrofit.Cilent
@@ -89,19 +90,24 @@ class RegisterAccountActivity : AppCompatActivity() {
             ?.subscribe(object : SingleObserver<UserResponse> {
                 override fun onSuccess(userResponse: UserResponse) {
                     if (userResponse.success == true) {
-                        userResponse.result?.getOrNull(0)?.let {
-                            // Lưu giá trị user mà server trả về cho biến static user
-                            Utils.user = it
-                        }
 
-                        Toast.makeText(
-                            this@RegisterAccountActivity,
-                            "Đăng ký thành công",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        var intent = Intent(this@RegisterAccountActivity, HomeActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        // Kiểm tra thông tin người dùng
+                        userResponse.result?.getOrNull(0)?.let { user ->
+
+                            // Nếu có : Lưu lại thông tin người dùng
+                            AppPreferences(this@RegisterAccountActivity).saveUserInfo(user)
+
+                            // Chuyển màn hình
+                            val intent = Intent(this@RegisterAccountActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } ?: kotlin.run {
+                            Toast.makeText(
+                                this@RegisterAccountActivity,
+                                "Thông tin người dùng trống ",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
                         Toast.makeText(
                             this@RegisterAccountActivity,

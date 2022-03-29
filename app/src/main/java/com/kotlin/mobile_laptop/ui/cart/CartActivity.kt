@@ -3,6 +3,7 @@ package com.kotlin.mobile_laptop.ui.cart
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlin.mobile_laptop.R
 import com.kotlin.mobile_laptop.model.CartControler
@@ -13,8 +14,9 @@ import java.text.DecimalFormat
 
 class CartActivity : AppCompatActivity() {
     var adapterCart : CartAdapter? = null
-    var listCart = ArrayList<OrderProduct>()
+    var listCart = CartControler.arrayCart
     var totalMoney = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
@@ -24,12 +26,9 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerviewGioHang() {
-        listCart = CartControler.arrayCart
         adapterCart = CartAdapter(this,listCart,::onItemOrderChange)
         rcv_Cart.adapter = adapterCart
         rcv_Cart.layoutManager = LinearLayoutManager(this)
-
-
     }
 
     private fun onItemOrderChange (orderProduct: OrderProduct) {
@@ -53,6 +52,7 @@ class CartActivity : AppCompatActivity() {
             totalMoney += (it.product.price * it.amount)
         }
         val formatter = DecimalFormat("#,###")
-        tv_Total_Money.text = formatter.format(totalMoney)
+        Log.e("======>", formatter.format(totalMoney) )
+        tv_total_money.text = formatter.format(totalMoney)
     }
 }

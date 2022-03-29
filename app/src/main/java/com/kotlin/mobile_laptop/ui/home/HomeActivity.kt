@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.kotlin.mobile_laptop.R
+import com.kotlin.mobile_laptop.local.AppPreferences
 import com.kotlin.mobile_laptop.ui.detail.DetailActivity
 import com.kotlin.mobile_laptop.model.ItemMenu
 import com.kotlin.mobile_laptop.model.ItemMenuResponse
@@ -54,6 +55,10 @@ class HomeActivity : AppCompatActivity() {
         // setup quảng cáo
         actionViewFlipper()
 
+        // setup nếu user đã đăng nhập
+        setupUserLogin()
+
+
         // setup recycle view
         setupRecyclerViewMenu()
         setUpRecyclerViewHome()
@@ -65,6 +70,12 @@ class HomeActivity : AppCompatActivity() {
             getProduct()
         }else {
             Toast.makeText(this, "Mất mạng", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setupUserLogin(){
+        AppPreferences(this).getUserInfo().username?.let { userName->
+            tv_login.text = userName
         }
     }
 

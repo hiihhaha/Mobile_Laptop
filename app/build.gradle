@@ -62,4 +62,7 @@ dependencies {
     implementation "com.github.skydoves:powerspinner:1.1.9"
     //gson
     implementation 'com.google.code.gson:gson:2.9.0'
+    // dialog
+    //lib dialog https://github.com/derohimat/sweet-alert-dialog
+    implementation 'com.kaopiz:kprogresshud:1.2.0'
 }
