@@ -8,21 +8,24 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.kotlin.mobile_laptop.R
-import com.kotlin.mobile_laptop.local.AppPreferences
+import com.kotlin.mobile_laptop.base.BaseActivity
+import com.kotlin.mobile_laptop.data.local.AppPreferences
 import com.kotlin.mobile_laptop.ui.detail.DetailActivity
 import com.kotlin.mobile_laptop.model.ItemMenu
 import com.kotlin.mobile_laptop.model.ItemMenuResponse
 import com.kotlin.mobile_laptop.model.Product
 import com.kotlin.mobile_laptop.model.ProductResponse
-import com.kotlin.mobile_laptop.retrofit.ApiApp
-import com.kotlin.mobile_laptop.retrofit.Cilent
+import com.kotlin.mobile_laptop.data.remote.retrofit.ApiApp
+import com.kotlin.mobile_laptop.data.remote.retrofit.Cilent
 import com.kotlin.mobile_laptop.ui.home.adapter.HomeAdapter
 import com.kotlin.mobile_laptop.ui.home.adapter.ProductAdapter
 import com.kotlin.mobile_laptop.ui.login.LoginActivity
+import com.kotlin.mobile_laptop.ui.login.LoginViewModel
 import com.kotlin.mobile_laptop.ui.type_product.TypeProductActivity
 import com.kotlin.mobile_laptop.utils.Utils.Companion.BaseUrl
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -31,13 +34,15 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_home.*
 
-class HomeActivity : AppCompatActivity() {
-    var apiBanHang = Cilent.getInstance(BaseUrl)?.create(ApiApp::class.java)
+class HomeActivity : BaseActivity() {
+    private val viewModel by lazy {
+        ViewModelProvider(this)[HomeViewModel::class.java]
+    }
+
     var listProduct = ArrayList<Product>()
     var listItemMenu = ArrayList<ItemMenu>()
     var adapterHome: HomeAdapter? = null
     var adapterProduct: ProductAdapter? = null
-
 
     companion object {
         const val TRANG_CHU = 0
@@ -47,105 +52,62 @@ class HomeActivity : AppCompatActivity() {
         const val THONG_TIN = 4
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
-        // setup action bar
-        actionBar()
-        // setup quảng cáo
-        actionViewFlipper()
+    override val layoutId: Int = R.layout.activity_home
 
-        // setup nếu user đã đăng nhập
+    override fun setupView() {
         setupUserLogin()
-
-
-        // setup recycle view
         setupRecyclerViewMenu()
         setUpRecyclerViewHome()
+        actionViewFlipper()
+        actionBar()
+    }
+
+    override fun setupObserver() {
+        viewModel.itemMenuResponseLiveData.observe(this, { response ->
+            if (response?.success == true) {
+                response.result?.let {
+                    listItemMenu.addAll(it)
+                    adapterHome?.notifyDataSetChanged()
+                }
+            } else {
+                Toast.makeText(this@HomeActivity, response?.message, Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+
+        viewModel.productResponseLiveData.observe(this, { productResponse ->
+            if (productResponse.success == true) {
+                productResponse.result?.let {
+                    listProduct.addAll(it)
+                    adapterProduct?.notifyDataSetChanged()
+                }
+            } else {
+                Toast.makeText(
+                    this@HomeActivity,
+                    productResponse.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
 
 
-        // kiểm tra có mạng thì gọi data server về
+        viewModel.errorLiveData.observe(this, {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    override fun setupEvent() {
+        setupUserLogin()
         if (isNetworkConnected()) {
-            getItemMenu()
-            getProduct()
-        }else {
-            Toast.makeText(this, "Mất mạng", Toast.LENGTH_SHORT).show()
+            viewModel.getItemMenu()
+            viewModel.getListProduct()
+        } else {
+            Toast.makeText(this, "Vui lòng kiểm tra kết nối internet", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun setupUserLogin(){
-        AppPreferences(this).getUserInfo().username?.let { userName->
-            tv_login.text = userName
-        }
-    }
-
-    private fun getItemMenu() {
-        apiBanHang?.getItemMenu()
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : SingleObserver<ItemMenuResponse> {
-                override fun onSubscribe(d: Disposable?) {
-
-
-                }
-
-                override fun onSuccess(response: ItemMenuResponse?) {
-                    if (response?.success == true) {
-                        response.result?.let {
-                            listItemMenu.addAll(it)
-                            adapterHome?.notifyDataSetChanged()
-                        }
-                    } else {
-                        Toast.makeText(this@HomeActivity, response?.message, Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-
-                override fun onError(response: Throwable?) {
-                    Toast.makeText(
-                        this@HomeActivity,
-                        response?.message ?: "Lỗi",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                }
-
-            })
-
-    }
-
-    private fun getProduct() {
-        apiBanHang?.getProduct()
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : SingleObserver<ProductResponse> {
-                override fun onSuccess(productResponse: ProductResponse) {
-                    if (productResponse.success == true) {
-                        productResponse.result?.let {
-                            listProduct.addAll(it)
-                            adapterProduct?.notifyDataSetChanged()
-                        }
-                    } else {
-                        Toast.makeText(
-                            this@HomeActivity,
-                            productResponse?.message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                }
-
-                override fun onSubscribe(d: Disposable?) {
-                }
-
-                override fun onError(e: Throwable?) {
-                    Toast.makeText(this@HomeActivity, e?.message, Toast.LENGTH_SHORT).show()
-                }
-            })
     }
 
     private fun setupRecyclerViewMenu() {
-        adapterHome = HomeAdapter(this, listItemMenu,:: onItemMenuClick)
+        adapterHome = HomeAdapter(this, listItemMenu, ::onItemMenuClick)
         rcv_navigation.layoutManager = LinearLayoutManager(this)
         rcv_navigation.adapter = adapterHome
 
@@ -185,8 +147,14 @@ class HomeActivity : AppCompatActivity() {
             drawelayout.openDrawer(GravityCompat.START)
         }
         tv_login.setOnClickListener {
-            var intent = Intent(this,LoginActivity::class.java)
+            var intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun setupUserLogin() {
+        AppPreferences().getUserInfo().username?.let { userName ->
+            tv_login.text = userName
         }
     }
 
@@ -203,6 +171,7 @@ class HomeActivity : AppCompatActivity() {
         startActivity(intent)
 
     }
+
     private fun onItemMenuClick(itemMenu: ItemMenu) {
         Toast.makeText(this, itemMenu.name, Toast.LENGTH_SHORT).show()
         when (itemMenu.id) {

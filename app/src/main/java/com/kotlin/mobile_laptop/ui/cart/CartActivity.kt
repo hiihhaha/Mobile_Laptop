@@ -1,29 +1,41 @@
 package com.kotlin.mobile_laptop.ui.cart
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlin.mobile_laptop.R
+import com.kotlin.mobile_laptop.base.BaseActivity
 import com.kotlin.mobile_laptop.model.CartControler
 import com.kotlin.mobile_laptop.model.OrderProduct
 import com.kotlin.mobile_laptop.ui.pay.PayActivity
 import kotlinx.android.synthetic.main.activity_cart.*
 import java.text.DecimalFormat
 
-class CartActivity : AppCompatActivity() {
+class CartActivity : BaseActivity() {
     var adapterCart : CartAdapter? = null
     var listCart = CartControler.arrayCart
     var totalMoney = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_cart)
-        initControl ()
+    override val layoutId: Int = R.layout.activity_cart
+    override fun setupView() {
         setupRecyclerviewGioHang()
         updateTotalMoney()
     }
+
+    override fun setupObserver() {
+
+    }
+
+    override fun setupEvent() {
+        img_back2.setOnClickListener{onBackPressed()}
+        btn_OderPay.setOnClickListener {
+            var intent = Intent(this, PayActivity::class.java)
+            intent.putExtra("totalMoney",totalMoney)
+            startActivity(intent)
+        }
+
+    }
+
 
     private fun setupRecyclerviewGioHang() {
         adapterCart = CartAdapter(this,listCart,::onItemOrderChange)
@@ -33,15 +45,6 @@ class CartActivity : AppCompatActivity() {
 
     private fun onItemOrderChange (orderProduct: OrderProduct) {
         updateTotalMoney()
-    }
-
-    private fun initControl (){
-        img_back2.setOnClickListener{onBackPressed()}
-        btn_OderPay.setOnClickListener {
-            var intent = Intent(this, PayActivity::class.java)
-            intent.putExtra("totalMoney",totalMoney)
-            startActivity(intent)
-        }
     }
 
 

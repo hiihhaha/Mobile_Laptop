@@ -7,10 +7,10 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import com.kotlin.mobile_laptop.R
-import com.kotlin.mobile_laptop.local.AppPreferences
+import com.kotlin.mobile_laptop.data.local.AppPreferences
 import com.kotlin.mobile_laptop.model.UserResponse
-import com.kotlin.mobile_laptop.retrofit.ApiApp
-import com.kotlin.mobile_laptop.retrofit.Cilent
+import com.kotlin.mobile_laptop.data.remote.retrofit.ApiApp
+import com.kotlin.mobile_laptop.data.remote.retrofit.Cilent
 import com.kotlin.mobile_laptop.ui.home.HomeActivity
 import com.kotlin.mobile_laptop.utils.Utils
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -66,7 +66,7 @@ class ResetPassActivity : AppCompatActivity() {
                         userResponse.result?.getOrNull(0)?.let { user ->
 
                             // Nếu có : Lưu lại thông tin người dùng
-                            AppPreferences(this@ResetPassActivity).saveUserInfo(user)
+                            AppPreferences().saveUserInfo(user)
 
                             // Chuyển màn hình
                             val intent = Intent(this@ResetPassActivity, HomeActivity::class.java)

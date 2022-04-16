@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.pay.PayActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="#27B32C"
+        android:background="#5EE2F3"
         android:id="@+id/cl_pay"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         <ImageView
             android:layout_marginLeft="10dp"
             android:id="@+id/img_back3"
-            android:src="@drawable/ic_baseline_arrow_back_24"
+            android:src="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/cl_pay"

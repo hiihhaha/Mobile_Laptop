@@ -1,43 +1,75 @@
 package com.kotlin.mobile_laptop.ui.pay
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.widget.Toast
-import com.google.gson.Gson
+import androidx.lifecycle.ViewModelProvider
 import com.kotlin.mobile_laptop.R
+import com.kotlin.mobile_laptop.base.BaseActivity
 import com.kotlin.mobile_laptop.model.CartControler
-import com.kotlin.mobile_laptop.model.OrderResponse
-import com.kotlin.mobile_laptop.retrofit.ApiApp
-import com.kotlin.mobile_laptop.retrofit.Cilent
 import com.kotlin.mobile_laptop.ui.home.HomeActivity
-import com.kotlin.mobile_laptop.utils.Utils
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.SingleObserver
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.activity_pay.*
 import java.text.DecimalFormat
 
-class PayActivity : AppCompatActivity() {
-    var apiBanHang = Cilent.getInstance(Utils.BaseUrl)?.create(ApiApp::class.java)
+class PayActivity : BaseActivity() {
+    private val viewModel by lazy {
+        ViewModelProvider(this)[PayViewModel::class.java]
+    }
     var totalMoney = 0
     var email = ""
     var address = ""
     var phoneNumber = ""
     var idUser = ""
+    var detail = ""
     var amount = 0
-    var detailoder = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pay)
+
+    override val layoutId: Int = R.layout.activity_pay
+
+    override fun setupView() {
         totalMoney = intent.getIntExtra("totalMoney", 0)
         countItem()
         initView()
-        initControl()
+
+
+
+    }
+
+    override fun setupObserver() {
+        viewModel.payLiveData.observe(this, { orderResponse ->
+            if (orderResponse.success == true) {
+                Toast.makeText(this@PayActivity, "Thanh toán thành công", Toast.LENGTH_SHORT).show()
+                CartControler.arrayCart.clear()
+                    var intent = Intent(this@PayActivity, HomeActivity::class.java)
+                    startActivity(intent)
+
+                finish()
+            } else {
+                Toast.makeText(this@PayActivity, orderResponse.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.errorLiveData.observe(this, {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        })
+    }
+
+
+    override fun setupEvent() {
+        img_back3.setOnClickListener { onBackPressed() }
+        btn_Pay.setOnClickListener {
+            if (isValidateSuccess()) {
+                viewModel.oder(
+                    email = email,
+                    phoneNumber = phoneNumber,
+                    address = address,
+                    amount = amount,
+                    totalMoney = totalMoney.toString(),
+                    idUser = idUser,
+                    detail = detail
+                )
+            }
+        }
     }
 
     private fun countItem() {
@@ -53,15 +85,6 @@ class PayActivity : AppCompatActivity() {
         tv_Money.text = "$giaSP Đ"
     }
 
-    private fun initControl() {
-        img_back3.setOnClickListener { onBackPressed() }
-        btn_Pay.setOnClickListener {
-            if (isValidateSuccess()) {
-                payOrder()
-            }
-        }
-    }
-
     private fun isValidateSuccess(): Boolean {
         address = edt_address.text.toString().trim()
         if (TextUtils.isEmpty(address)) {
@@ -69,50 +92,5 @@ class PayActivity : AppCompatActivity() {
             return false
         }
         return true
-    }
-
-    private fun payOrder() {
-        Log.e("=====>", "detail: ${Gson().toJson(CartControler.arrayCart)}")
-        apiBanHang?.oder(
-            email = email,
-            phoneNumber = phoneNumber,
-            address = address,
-            amount = amount,
-            totalMoney = totalMoney.toString(),
-            idUser = idUser,
-            detail = Gson().toJson(CartControler.arrayCart)
-        )
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : SingleObserver<OrderResponse> {
-                override fun onSuccess(oderResponse: OrderResponse) {
-                    if (oderResponse.success == true) {
-                        Toast.makeText(
-                            this@PayActivity,
-                            "Thanh toán thành công",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        CartControler.arrayCart.clear()
-                        btn_Pay.setOnClickListener {
-                            var intent = Intent(this@PayActivity, HomeActivity::class.java)
-                            startActivity(intent)
-                        }
-                        finish()
-                    } else {
-                        Toast.makeText(
-                            this@PayActivity,
-                            oderResponse.message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Toast.makeText(this@PayActivity, e.message, Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onSubscribe(d: Disposable) {
-                }
-            })
     }
 }

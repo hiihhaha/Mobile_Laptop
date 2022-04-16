@@ -1,4 +1,4 @@
-package com.kotlin.mobile_laptop.retrofit
+package com.kotlin.mobile_laptop.data.remote.retrofit
 
 import com.google.gson.GsonBuilder
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
@@ -14,15 +14,10 @@ class Cilent {
     companion object {
         private var instance: Retrofit? = null
         fun getInstance(baseUrl: String): Retrofit? {
-            val loggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-
             val okkHttpClient = OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
-                .addInterceptor(loggingInterceptor)
                 .connectionPool(ConnectionPool(0, 5, TimeUnit.MINUTES))
                 .protocols(listOf(Protocol.HTTP_1_1))
                 .build()

@@ -1,4 +1,4 @@
-package com.kotlin.mobile_laptop.retrofit
+package com.kotlin.mobile_laptop.data.remote.retrofit
 
 import com.kotlin.mobile_laptop.model.*
 import io.reactivex.rxjava3.core.Single

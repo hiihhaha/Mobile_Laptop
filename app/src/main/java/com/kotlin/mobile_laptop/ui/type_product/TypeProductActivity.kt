@@ -5,13 +5,16 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlin.mobile_laptop.R
+import com.kotlin.mobile_laptop.base.BaseActivity
 import com.kotlin.mobile_laptop.ui.detail.DetailActivity
 import com.kotlin.mobile_laptop.model.Product
 import com.kotlin.mobile_laptop.model.ProductResponse
-import com.kotlin.mobile_laptop.retrofit.ApiApp
-import com.kotlin.mobile_laptop.retrofit.Cilent
+import com.kotlin.mobile_laptop.data.remote.retrofit.ApiApp
+import com.kotlin.mobile_laptop.data.remote.retrofit.Cilent
+import com.kotlin.mobile_laptop.ui.home.HomeViewModel
 import com.kotlin.mobile_laptop.utils.Utils
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.SingleObserver
@@ -19,7 +22,11 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_type_product.*
 
-class TypeProductActivity : AppCompatActivity() {
+class TypeProductActivity : BaseActivity() {
+    private val viewModel by lazy {
+        ViewModelProvider(this)[TyprProductViewModel::class.java]
+    }
+
     companion object {
         fun getIntent(context: Context, type: Int = 1): Intent {
             return Intent(context, TypeProductActivity::class.java).apply {
@@ -28,19 +35,41 @@ class TypeProductActivity : AppCompatActivity() {
         }
     }
 
-    var apiTypeProduct = Cilent.getInstance(Utils.BaseUrl)?.create(ApiApp::class.java)
     var adapterTypeProduct: TypesProductAdapter? = null
     var listTypeProduct = ArrayList<Product>()
     var type = 1
+    override val layoutId: Int = R.layout.activity_type_product
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_type_product)
-        toolbar.setOnClickListener { onBackPressed() }
+    override fun setupView() {
         type = intent.getIntExtra("type", 1)
         setupRecyclerViewTypeProduct()
-        getProduct()
+        viewModel.getDetail(type)
 
+    }
+
+    override fun setupObserver() {
+        viewModel.typeProductLiveData.observe(this, { productResponse ->
+            if (productResponse.success == true) {
+                productResponse.result?.toMutableList()?.let {
+                    listTypeProduct.addAll(it)
+                    adapterTypeProduct?.notifyDataSetChanged()
+                }
+            } else {
+                Toast.makeText(this@TypeProductActivity, productResponse.message, Toast.LENGTH_SHORT)
+                    .show()
+
+            }
+
+        })
+        viewModel.errorLiveData.observe(this, {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    override fun setupEvent() {
+        toolbar.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun setupRecyclerViewTypeProduct() {
@@ -56,26 +85,5 @@ class TypeProductActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun getProduct() {
-        apiTypeProduct?.getDetail(type)
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : SingleObserver<ProductResponse> {
-                override fun onSuccess(productResponse: ProductResponse) {
-                    productResponse.result?.toMutableList()?.let {
-                        listTypeProduct.addAll(it)
-                        adapterTypeProduct?.notifyDataSetChanged()
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    println(e.message)
-                    Toast.makeText(this@TypeProductActivity, e.message, Toast.LENGTH_SHORT)
-                        .show()
-
-                }
-
-                override fun onSubscribe(d: Disposable) {}
-            })
-    }
 }
+

@@ -1,12 +1,12 @@
-package com.kotlin.mobile_laptop.local
+package com.kotlin.mobile_laptop.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
+import com.kotlin.mobile_laptop.App
 import com.kotlin.mobile_laptop.model.User
 
-class AppPreferences(
-    var context: Context
-) {
+class AppPreferences{
     var preferences: SharedPreferences
     private var editor: SharedPreferences.Editor
 
@@ -19,7 +19,7 @@ class AppPreferences(
 
 
     init {
-        preferences = context
+        preferences = App.getInstance()
             .getSharedPreferences(REFERENCES_NAME, Context.MODE_PRIVATE)
         editor = preferences.edit()
     }

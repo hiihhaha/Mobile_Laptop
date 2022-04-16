@@ -1,4 +1,4 @@
-package com.kotlin.mobile_laptop.ui.Dialog
+package com.kotlin.mobile_laptop.ui.dialog
 
 import android.app.AlertDialog
 import android.content.Context

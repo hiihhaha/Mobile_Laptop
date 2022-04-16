@@ -1,35 +1,50 @@
 package com.kotlin.mobile_laptop.ui.detail
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.kotlin.mobile_laptop.R
+import com.kotlin.mobile_laptop.base.BaseActivity
 import com.kotlin.mobile_laptop.model.CartControler
 import com.kotlin.mobile_laptop.model.Product
 import com.kotlin.mobile_laptop.ui.cart.CartActivity
 import kotlinx.android.synthetic.main.activity_detail.*
 import java.text.DecimalFormat
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : BaseActivity() {
     var cartControler = CartControler ()
     var product : Product? = null
     var amount = 1
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail)
 
+
+
+
+    override val layoutId: Int = R.layout.activity_detail
+
+    override fun setupView() {
         product = intent.getSerializableExtra("mobilePhone") as Product?
-        initControl()
         setupSpinner()
         product?.let {
             showProduct(it)
         }
     }
+
+    override fun setupObserver() {
+
+    }
+
+    override fun setupEvent() {
+        initControl()
+    }
+
+
+
+
+
 
     private fun initControl() {
         img_cart.setOnClickListener {
